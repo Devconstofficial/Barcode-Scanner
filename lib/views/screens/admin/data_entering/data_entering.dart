@@ -24,6 +24,7 @@ class DataEnteringScreen extends GetView<DataEnteringController> {
           padding: EdgeInsets.only(left: 25.w, right: 25.w),
           child: SingleChildScrollView(
             child: Column(
+              
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
