@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "390108455121",
+    "project_id": "barcodescanner-fd0db",
+    "storage_bucket": "barcodescanner-fd0db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:390108455121:android:91aedec078d714371aa5f0",
+        "android_client_info": {
+          "package_name": "com.example.barcode_scanner"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbq0dS7hvkF1zZCuHkKkiCGXAhhTnlyd0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
