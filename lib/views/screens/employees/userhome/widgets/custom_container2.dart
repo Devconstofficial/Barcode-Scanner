@@ -1,14 +1,19 @@
 import 'package:barcode_scanner/utils/app_colors.dart';
 import 'package:barcode_scanner/utils/app_images.dart';
+import 'package:barcode_scanner/views/screens/employees/userhome/controller/user_home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-// ignore: must_be_immutable
 class CustomContainer2 extends StatelessWidget {
   int count;
-  CustomContainer2({super.key, required this.count});
+  RxInt? lilaCount;
+  RxInt? containerCount;
+  CustomContainer2({super.key, required this.count, this.lilaCount, this.containerCount});
+  UserHomeController controller = Get.put(UserHomeController());
 
   @override
   Widget build(BuildContext context) {
@@ -63,16 +68,17 @@ class CustomContainer2 extends StatelessWidget {
                 Column(
                   children: [
                     Text(
-                      '4',
-                      style: GoogleFonts.montserrat(
-                        textStyle: TextStyle(
-                          color: kBlueTextColor,
-                          fontSize: 24.sp,
-                          fontWeight: FontWeight.w600,
-                          height: 0,
+                        '${controller.truckList.length}',
+                        style: GoogleFonts.montserrat(
+                          textStyle: TextStyle(
+                            color: kBlueTextColor,
+                            fontSize: 24.sp,
+                            fontWeight: FontWeight.w600,
+                            height: 0,
+                          ),
                         ),
                       ),
-                    ),
+                    
                     Text(
                       'LKW/ Lila',
                       style: GoogleFonts.montserrat(
@@ -97,14 +103,16 @@ class CustomContainer2 extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    Text(
-                      '16',
-                      style: GoogleFonts.montserrat(
-                        textStyle: TextStyle(
-                          color: kBlueTextColor,
-                          fontSize: 24.sp,
-                          fontWeight: FontWeight.w600,
-                          height: 0,
+                    Obx(
+                      () => Text(
+                        '${controller.lilaCount.value}',
+                        style: GoogleFonts.montserrat(
+                          textStyle: TextStyle(
+                            color: kBlueTextColor,
+                            fontSize: 24.sp,
+                            fontWeight: FontWeight.w600,
+                            height: 0,
+                          ),
                         ),
                       ),
                     ),
@@ -140,7 +148,7 @@ class CustomContainer2 extends StatelessWidget {
                   width: 29.w,
                 ),
                 Text(
-                  "${count} gesamte Bauteile",
+                  "${controller.containerCount.value} gesamte Bauteile",
                   style: GoogleFonts.montserrat(
                     textStyle: TextStyle(
                       color: kBlueTextColor,

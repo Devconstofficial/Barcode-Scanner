@@ -3,8 +3,10 @@ import 'package:barcode_scanner/views/custom_widgets/custom_button.dart';
 import 'package:barcode_scanner/views/custom_widgets/password_textfield.dart';
 import 'package:barcode_scanner/views/custom_widgets/phone_textfield.dart';
 import 'package:barcode_scanner/views/custom_widgets/simpletext_field.dart';
+import 'package:barcode_scanner/views/screens/admin/addusers/controller/user_management_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AddUsers extends StatefulWidget {
@@ -71,7 +73,7 @@ class _AddUsersState extends State<AddUsers> {
                             ),
                           ],
                         ),
-                        const Expanded(
+                        Expanded(
                           child: TabBarView(
                             children: [
                               ExistingUsers(),
@@ -103,37 +105,56 @@ class AddAdmin extends StatefulWidget {
 class _AddAdminState extends State<AddAdmin> {
   @override
   Widget build(BuildContext context) {
+    final UserManagementController controller =
+        Get.put(UserManagementController());
     return Column(
       children: [
         SizedBox(
           height: 30.h,
         ),
-        const SimpleTextField(text: 'Vollständiger Name'),
+        SimpleTextField(
+          text: 'Vollständiger Name',
+          controller: controller.adminName,
+        ),
         SizedBox(
           height: 27.h,
         ),
-        PhoneTextField(),
+        SimpleTextField(text: 'E-Mail', controller: controller.adminEmail),
         SizedBox(
           height: 27.h,
         ),
-        const PasswordInputField(),
+        PasswordInputField(controller: controller.adminPassword),
         SizedBox(
-          height: 290.h,
+          height: 27.h,
         ),
-        const CustomButton(text: 'Benutzer hinzufügen'),
+        PhoneTextField(
+          onPhoneNumberChanged: (value) {
+            controller.adminContact.text = value;
+          },
+        ),
+        SizedBox(
+          height: 170.h,
+        ),
+        CustomButton(
+            onPressed: () {
+              controller.addAdmin(context);
+            },
+            text: 'Benutzer hinzufügen')
       ],
     );
   }
 }
 
 class AddUser extends StatefulWidget {
-  const AddUser({Key? key});
+  AddUser({Key? key});
 
   @override
   State<AddUser> createState() => _AddUserState();
 }
 
 class _AddUserState extends State<AddUser> {
+  final UserManagementController controller =
+      Get.put(UserManagementController());
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -141,114 +162,169 @@ class _AddUserState extends State<AddUser> {
         SizedBox(
           height: 30.h,
         ),
-        const SimpleTextField(text: 'Vollständiger Name'),
+        SimpleTextField(
+          text: 'Vollständiger Name',
+          controller: controller.userName,
+        ),
         SizedBox(
           height: 27.h,
         ),
-        PhoneTextField(),
+        SimpleTextField(text: 'E-Mail', controller: controller.userEmail),
         SizedBox(
-          height: 290.h,
+          height: 27.h,
         ),
-        const CustomButton(text: 'Benutzer hinzufügen')
+        PasswordInputField(controller: controller.userPassword),
+        SizedBox(
+          height: 27.h,
+        ),
+        PhoneTextField(
+          onPhoneNumberChanged: (value) {
+            controller.userContact.text = value;
+          },
+        ),
+        SizedBox(
+          height: 170.h,
+        ),
+        CustomButton(
+            onPressed: () {
+              controller.addUser(context);
+            },
+            text: 'Benutzer hinzufügen')
       ],
     );
   }
 }
 
 class ExistingUsers extends StatelessWidget {
-  const ExistingUsers({super.key});
+  final UserManagementController controller =
+      Get.put(UserManagementController());
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 36.h,
-        ),
-        Container(
-          width: 368.w,
-          height: 103.h,
-          decoration: ShapeDecoration(
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.r),
+    return Obx(
+      () => SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: 36.h,
             ),
-            shadows: [
-              BoxShadow(
-                color: kBoxShadowColor,
-                blurRadius: 4.r,
-                offset: const Offset(0, 4),
-                spreadRadius: 0,
-              )
-            ],
-          ),
-          child: Row(
-            children: [
-              Padding(
-                padding: EdgeInsets.only(left: 32.w, top: 10.h),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+            for (var item in controller.userList) ...{
+              Container(
+                width: 378.w,
+                height: 103.h,
+                decoration: ShapeDecoration(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  shadows: [
+                    BoxShadow(
+                      color: kBoxShadowColor,
+                      blurRadius: 4.r,
+                      offset: const Offset(0, 4),
+                      spreadRadius: 0,
+                    )
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      "Benutzer",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.montserrat(
-                        textStyle: TextStyle(
-                          color: kBlueTextColor,
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                          height: 0,
-                        ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 32.w, top: 10.h),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item['isAdmin'] == true
+                                ? 'Administrator'
+                                : 'Benutzer',
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                color: item['isAdmin'] == true
+                                    ? kGreenTextColor
+                                    : kBlueTextColor,
+                                fontSize: 14.sp,
+                                fontWeight: FontWeight.w600,
+                                height: 0,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Text(
+                            item['name'],
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                color: kBlackTextColor,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                                height: 0,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5.h,
+                          ),
+                          Text(
+                            item['contact'],
+                            textAlign: TextAlign.center,
+                            style: GoogleFonts.montserrat(
+                              textStyle: TextStyle(
+                                color: kGreyTextColor,
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                                height: 0,
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    Text(
-                      "John Gillbert",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.montserrat(
-                        textStyle: TextStyle(
-                          color: kBlackTextColor,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                          height: 0,
+                    Column(
+                      children: [
+                        IconButton(
+                          icon: Icon(
+                            Icons.delete_outlined,
+                            color: kRedContainerColor,
+                          ),
+                          onPressed: () {
+                            Get.defaultDialog(
+                              title: 'Benutzer löschen',
+                              middleText:
+                                  'Möchten Sie diesen Benutzer wirklich löschen?',
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Get.back(),
+                                  child: Text('Abbrechen',
+                                      style: TextStyle(color: kBlueTextColor)),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    controller.deleteUser(item['id']);
+                                    Get.back();
+                                  },
+                                  child: Text('Löschen',
+                                      style: TextStyle(color: kBlueTextColor)),
+                                ),
+                              ],
+                            );
+                          },
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 5.h,
-                    ),
-                    Text(
-                      "+49 163 555 1546",
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.montserrat(
-                        textStyle: TextStyle(
-                          color: kGreyTextColor,
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                          height: 0,
-                        ),
-                      ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 17.h, left: 160.w),
-                child: const Column(
-                  children: [
-                    Icon(
-                      Icons.delete_outlined,
-                      color: kRedContainerColor,
-                    )
-                  ],
-                ),
+              SizedBox(
+                height: 10.h,
               )
-            ],
-          ),
+            },
+          ],
         ),
-      ],
+      ),
     );
   }
 }

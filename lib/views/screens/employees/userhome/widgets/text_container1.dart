@@ -7,8 +7,15 @@ class TextContainer1 extends StatelessWidget {
   final String text;
   final bool showIcon; 
   final double width;
+  final bool isCheck;
 
-  const TextContainer1({super.key, required this.text, this.showIcon = true, required this.width});
+  const TextContainer1({
+    super.key, 
+    required this.text, 
+    this.showIcon = true, 
+    required this.width,
+    required this.isCheck,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +37,7 @@ class TextContainer1 extends StatelessWidget {
             text,
             style: GoogleFonts.montserrat(
               textStyle: TextStyle(
-                color: kBlueTextColor,
+                color: isCheck ? Colors.green : kBlueTextColor,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
                 height: 0,
@@ -38,9 +45,9 @@ class TextContainer1 extends StatelessWidget {
             ),
           ),
           if (showIcon) 
-            const Icon(
-              Icons.arrow_forward_outlined,
-              color: kBlueTextColor,
+            Icon(
+              isCheck ? Icons.check : Icons.arrow_forward_outlined,
+              color: isCheck ? Colors.green : kBlueTextColor,
             )
         ],
       ),

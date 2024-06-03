@@ -19,7 +19,7 @@ class SmallContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 165.w,
+      width: 185.w,
       height: 54.h,
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(

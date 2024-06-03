@@ -48,22 +48,22 @@ class _CustomNavBarState extends State<CustomNavBar> {
           _buildNavBarItem(
             index: 0,
             svgPath: 'assets/images/home.svg',
-            label: 'Home',
+            label: '',
           ),
           _buildNavBarItem(
             index: 1,
             svgPath: 'assets/images/scan.svg',
-            label: 'P1',
+            label: '',
           ),
           _buildNavBarItem(
             index: 2,
             svgPath: 'assets/images/time.svg',
-            label: 'P2',
+            label: '',
           ),
           _buildNavBarItem(
             index: 3,
             svgPath: 'assets/images/profile.svg',
-            label: 'P3',
+            label: '',
           ),
         ],
         onTap: (index) {

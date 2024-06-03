@@ -2,55 +2,64 @@ import 'package:barcode_scanner/utils/app_colors.dart';
 import 'package:barcode_scanner/utils/app_images.dart';
 import 'package:barcode_scanner/views/screens/employees/userhome/widgets/text_container1.dart';
 import 'package:barcode_scanner/views/screens/employees/userhome/widgets/text_container2.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as flutter;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class CustomCOntainer3 extends StatelessWidget {
+import '../../../../../models/truck_model.dart' as model;
+import '../../../../../utils/app_strings.dart';
+
+class CustomCOntainer3 extends flutter.StatelessWidget {
   final String text;
-  const CustomCOntainer3({Key? key, required this.text});
+  final List<model.Container> containers;
+
+  const CustomCOntainer3(
+      {flutter.Key? key, required this.text, required this.containers})
+      : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    return Container(
+  flutter.Widget build(flutter.BuildContext context) {
+    return flutter.Container(
       width: 184.w,
       height: 251.h,
-      decoration: ShapeDecoration(
-        color: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10.r),
+      decoration: flutter.ShapeDecoration(
+        color: flutter.Colors.white,
+        shape: flutter.RoundedRectangleBorder(
+          borderRadius: flutter.BorderRadius.circular(10.r),
         ),
         shadows: [
-          BoxShadow(
+          flutter.BoxShadow(
             color: kBoxShadowColor,
             blurRadius: 4.r,
-            offset: const Offset(0, 4),
+            offset: const flutter.Offset(0, 4),
             spreadRadius: 0,
           )
         ],
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
+      child: flutter.Column(
+        mainAxisSize: flutter.MainAxisSize.min,
         children: [
-          Padding(
-            padding: EdgeInsets.only(top: 20.h, left: 18.w),
-            child: Row(
+          flutter.Padding(
+            padding: flutter.EdgeInsets.only(top: 20.h, left: 18.w),
+            child: flutter.Row(
               children: [
-                SizedBox(
+                flutter.SizedBox(
                   width: 28.w,
                   height: 28.h,
-                  child: Image.asset(kTruck),
+                  child: flutter.Image.asset(kTruck),
                 ),
-                SizedBox(
+                flutter.SizedBox(
                   width: 17.w,
                 ),
-                Text(
+                flutter.Text(
                   text,
                   style: GoogleFonts.montserrat(
-                    textStyle: TextStyle(
+                    textStyle: flutter.TextStyle(
                       color: kBlackTextColor,
                       fontSize: 16.sp,
-                      fontWeight: FontWeight.w600,
+                      fontWeight: flutter.FontWeight.w600,
                       height: 0,
                     ),
                   ),
@@ -58,30 +67,36 @@ class CustomCOntainer3 extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 14.h, bottom: 9.h),
-            child: TextContainer1(
-              text: '[18] PO1251',
-              width: 30.w,
+          flutter.Expanded(
+            child: flutter.SingleChildScrollView(
+              child: flutter.Column(
+                children: containers.map((container) {
+                  return flutter.Padding(
+                    padding: flutter.EdgeInsets.only(top: 10.h),
+                    child: flutter.GestureDetector(
+                      onTap: () {
+                        if(container.isCheck){
+                          Get.toNamed(kScanFinishedRoute, arguments: {'truckName': text, 'quantity': container.quantity, 'containerId': container.containerId, 'container': container});
+                        } else {
+                          Get.toNamed(kContainerDetailsRoute, arguments: {'truckName': text, 'quantity': container.quantity, 'containerId': container.containerId, 'container': container});
+                        }
+                      },
+                      child: TextContainer1(
+                        text:
+                            '[${container.quantity}] ${container.containerId}',
+                        showIcon: true,
+                        width: 30.w,
+                        isCheck: container.isCheck,
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
             ),
           ),
-          const TextContainer2(
-            text: '[10] PO1356',
+          flutter.SizedBox(
+            height: 5.h,
           ),
-          Padding(
-            padding: EdgeInsets.only(top: 14.h, bottom: 9.h),
-            child: TextContainer1(
-              text: '[15] PO1386',
-              width: 30.w,
-            ),
-          ),
-          TextContainer1(
-            text: '[20] PO1740',
-            width: 30.w,
-          ),
-          SizedBox(
-            height: 10.h,
-          )
         ],
       ),
     );

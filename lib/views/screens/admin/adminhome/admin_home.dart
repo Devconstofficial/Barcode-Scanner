@@ -4,6 +4,8 @@ import 'package:barcode_scanner/views/screens/admin/adminhome/controller/admin_h
 import 'package:barcode_scanner/views/screens/admin/adminhome/widgets/admin_custom_container1.dart';
 import 'package:barcode_scanner/views/screens/admin/adminhome/widgets/admin_custom_container2.dart';
 import 'package:barcode_scanner/views/screens/admin/adminhome/widgets/admin_custom_container3.dart';
+import 'package:barcode_scanner/views/screens/auth/controller/auth_controller.dart';
+import 'package:barcode_scanner/views/screens/employees/userhome/widgets/custom_container3.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
@@ -14,7 +16,9 @@ class AdminHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Get.put(AdminHomeController());
+    AdminHomeController controller1 =
+        Get.put(AdminHomeController(), permanent: true);
+    AuthController controller = Get.put(AuthController());
 
     return SafeArea(
       child: Scaffold(
@@ -26,7 +30,7 @@ class AdminHome extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  height: 10.h,
+                  height: 30.h,
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -46,7 +50,7 @@ class AdminHome extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "Mustafa",
+                          '${controller1.box.read('name')}',
                           textAlign: TextAlign.center,
                           style: GoogleFonts.montserrat(
                             textStyle: TextStyle(
@@ -61,7 +65,8 @@ class AdminHome extends StatelessWidget {
                     ),
                     InkWell(
                       onTap: () {
-                        Get.off(kUserSigninRoute);
+                        controller1.selectedDate.value = '';
+                        controller.logout();
                       },
                       child: const Row(
                         children: [
@@ -70,7 +75,7 @@ class AdminHome extends StatelessWidget {
                             color: kBlueTextColor,
                           ),
                           Text(
-                            "Logout",
+                            "Abmelden",
                             style: TextStyle(color: kBlueTextColor),
                           ),
                         ],
@@ -83,57 +88,53 @@ class AdminHome extends StatelessWidget {
                 ),
                 AdminCustomContainer1(
                   width: 110.w,
+                  date: controller1.date,
                 ),
                 SizedBox(
                   height: 8.h,
                 ),
-                InkWell(
-                  onTap: () {
-                    Get.toNamed(kContainerDetailsRoute);
-                  },
-                  child: GetBuilder<AdminHomeController>(
-                    builder: (controller) {
-                      int totalParts = controller.trucksData.fold(
-                        0,
-                        (previousValue, truck) =>
-                            previousValue + (truck["lilaQuantity"] ?? 0) as int,
-                      );
-
-                      return AdminCustomContainer2(
-                        count: controller.trucksData.length,
-                        totalParts: totalParts,
-                      );
-                    },
-                  ),
-                ),
-                SizedBox(
-                  height: 8.h,
-                ),
-                GetBuilder<AdminHomeController>(
-                  builder: (controller) {
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 8.0,
-                        mainAxisSpacing: 8.0,
-                        childAspectRatio: MediaQuery.of(context).size.width /
-                            (MediaQuery.of(context).size.height / 1.65),
-                      ),
-                      itemCount: controller.trucksData.length,
-                      itemBuilder: (context, index) {
-                        final truckData = controller.trucksData[index];
-                        int val = index + 1;
-                        return AdminCustomContainer3(
-                            truckData: truckData, text: "Lila $val");
-                      },
+                Obx(() {
+                  if (controller1.isLoading.isTrue) {
+                    return Center(
+                      child: CircularProgressIndicator(color: kBlueTextColor),
                     );
-                  },
+                  } else {
+                    return Column(
+                      children: [
+                       
+                       AdminCustomContainer2(
+                count: controller1.truckList.length,
+                lilaCount: controller1.lilaCount,
+                containerCount: controller1.containerCount,
+              ),
+              SizedBox(
+                height: 8.h,
+              ),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: ScrollPhysics(),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 8.0,
+                  mainAxisSpacing: 8.0,
+                  childAspectRatio: MediaQuery.of(context).size.width /
+                      (MediaQuery.of(context).size.height / 1.65),
                 ),
-                SizedBox(
-                  height: 20.h,
-                ),
+                itemCount: controller1.truckList.length,
+                itemBuilder: (context, index) {
+                  return AdminCustomContainer3(
+                    text: controller1.truckList[index].truckName,
+                    containers: controller1.truckList[index].containers,
+                  );
+                },
+              ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                      ],
+                    );
+                  }
+                }),
               ],
             ),
           ),

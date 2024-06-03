@@ -10,7 +10,6 @@ class LilaContainer extends StatefulWidget {
   const LilaContainer({super.key, required this.text});
 
   @override
-  // ignore: library_private_types_in_public_api
   _LilaContainerState createState() => _LilaContainerState();
 }
 

@@ -5,6 +5,7 @@ import 'package:barcode_scanner/views/screens/admin/data_entering/controller/dat
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../../utils/app_images.dart';
 import '../../../custom_widgets/simpletext_field.dart';
@@ -14,7 +15,7 @@ class DataEnteringScreen extends GetView<DataEnteringController> {
 
   @override
   Widget build(BuildContext context) {
-    final String lilaText = Get.arguments ?? "Lila";
+     controller.lilaText.value = Get.arguments ?? "Lila";
 
     return SafeArea(
       child: Scaffold(
@@ -24,7 +25,6 @@ class DataEnteringScreen extends GetView<DataEnteringController> {
           padding: EdgeInsets.only(left: 25.w, right: 25.w),
           child: SingleChildScrollView(
             child: Column(
-              
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.max,
@@ -43,7 +43,7 @@ class DataEnteringScreen extends GetView<DataEnteringController> {
                       width: 20.w,
                     ),
                     Text(
-                      lilaText,
+                      controller.lilaText.value,
                       textAlign: TextAlign.center,
                       style: GoogleFonts.montserrat(
                         textStyle: TextStyle(
@@ -66,72 +66,76 @@ class DataEnteringScreen extends GetView<DataEnteringController> {
                           children: List.generate(controller.dataList.length,
                               (index) {
                             final item = controller.dataList[index];
-                            return Column(
-                              children: [
-                                Container(
-                                  width: 368.w,
-                                  height: 60.h,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.r),
-                                    border: Border.all(
-                                      color: kTextFieldColor,
+                            if (item["lilaText"] == controller.lilaText.value) {
+                              return Column(
+                                children: [
+                                  Container(
+                                    width: 368.w,
+                                    height: 60.h,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10.r),
+                                      border: Border.all(
+                                        color: kTextFieldColor,
+                                      ),
                                     ),
-                                  ),
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left: 15.w, right: 15.w),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                          item["lilaNumber"],
-                                          style: GoogleFonts.montserrat(
-                                            textStyle: TextStyle(
-                                              color: kBlackTextColor,
-                                              fontSize: 18.sp,
-                                              fontWeight: FontWeight.w600,
-                                              height: 0,
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          left: 15.w, right: 15.w),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            item["lilaNumber"],
+                                            style: GoogleFonts.montserrat(
+                                              textStyle: TextStyle(
+                                                color: kBlackTextColor,
+                                                fontSize: 18.sp,
+                                                fontWeight: FontWeight.w600,
+                                                height: 0,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              '${item["lilaQuantity"]}',
-                                              style: GoogleFonts.montserrat(
-                                                textStyle: TextStyle(
-                                                  color: kBlueTextColor,
-                                                  fontSize: 18.sp,
-                                                  fontWeight: FontWeight.w600,
-                                                  height: 0,
+                                          Row(
+                                            children: [
+                                              Text(
+                                                '${item["lilaQuantity"]}',
+                                                style: GoogleFonts.montserrat(
+                                                  textStyle: TextStyle(
+                                                    color: kBlueTextColor,
+                                                    fontSize: 18.sp,
+                                                    fontWeight: FontWeight.w600,
+                                                    height: 0,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            SizedBox(
-                                              width: 15.w,
-                                            ),
-                                            GestureDetector(
-                                              onTap: () {
-                                                controller.deleteItem(index);
-                                              },
-                                              child: const Icon(
-                                                Icons.delete_outline,
-                                                color: kDeleteIconColor,
-                                                size: 20,
+                                              SizedBox(
+                                                width: 15.w,
                                               ),
-                                            )
-                                          ],
-                                        ),
-                                      ],
+                                              GestureDetector(
+                                                onTap: () {
+                                                  controller.deleteItem(index);
+                                                },
+                                                child: const Icon(
+                                                  Icons.delete_outline,
+                                                  color: kDeleteIconColor,
+                                                  size: 20,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                SizedBox(height: 22.h),
-                              ],
-                            );
+                                  SizedBox(height: 22.h),
+                                ],
+                              );
+                            } else {
+                              return const SizedBox.shrink();
+                            }
                           }),
                         )
                       : Container(),
@@ -206,8 +210,7 @@ class DataEnteringScreen extends GetView<DataEnteringController> {
                             CustomButton(
                               text: "HINZUFÜGEN",
                               onPressed: () {
-                                controller.addDataToList();
-                                controller.addContainer.value = false;
+                                controller.addDataToList(controller.lilaText.value);
                               },
                             )
                           ],
@@ -222,7 +225,9 @@ class DataEnteringScreen extends GetView<DataEnteringController> {
           margin: EdgeInsets.only(bottom: 40.h, left: 30.w, right: 30.w),
           child: CustomButton(
             text: "ERLEDIGT",
-            onPressed: () {},
+            onPressed: () {
+              Get.back();
+            },
           ),
         ),
       ),

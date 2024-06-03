@@ -11,7 +11,7 @@ class LargeContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 332.w,
+      width: 362.w,
       height: 54.h,
       decoration: ShapeDecoration(
         shape: RoundedRectangleBorder(

@@ -30,17 +30,16 @@ class AdminTextContainer1 extends StatelessWidget {
             text,
             style: GoogleFonts.montserrat(
               textStyle: TextStyle(
-                color: kBlueTextColor,
+                color: showIcon? kGreenContainerColor : kBlueTextColor,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w600,
                 height: 0,
               ),
             ),
           ),
-          if (showIcon) 
-            const Icon(
-              Icons.arrow_forward_outlined,
-              color: kBlueTextColor,
+          Icon(
+              showIcon ? Icons.check : Icons.arrow_forward_outlined,
+              color: showIcon ? Colors.green : kBlueTextColor,
             )
         ],
       ),

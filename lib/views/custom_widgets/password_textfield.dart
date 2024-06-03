@@ -4,10 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class PasswordInputField extends StatefulWidget {
-  const PasswordInputField({super.key});
-
+  const PasswordInputField({super.key, this.controller});
+  final TextEditingController? controller;
   @override
-  // ignore: library_private_types_in_public_api
   _PasswordInputFieldState createState() => _PasswordInputFieldState();
 }
 
@@ -47,6 +46,7 @@ class _PasswordInputFieldState extends State<PasswordInputField> {
                 child: TextField(
                   obscureText: _obscureText,
                   keyboardType: TextInputType.visiblePassword,
+                  controller: widget.controller,
                   decoration: InputDecoration.collapsed(
                     focusColor: Colors.black,
                     hintText: 'Passwort',

@@ -1,20 +1,26 @@
 import 'package:barcode_scanner/utils/app_colors.dart';
 import 'package:barcode_scanner/utils/app_images.dart';
+import 'package:barcode_scanner/views/screens/admin/adminhome/controller/admin_home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 // ignore: must_be_immutable
 class AdminCustomContainer2 extends StatelessWidget {
   int count;
-  int totalParts;
+  RxInt? lilaCount;
+  RxInt? containerCount;
+  AdminCustomContainer2({super.key, required this.count, this.lilaCount, this.containerCount});
+  AdminHomeController controller = Get.put(AdminHomeController());
 
-  AdminCustomContainer2({
-    super.key,
-    required this.count,
-    required this.totalParts,
-  });
+  // AdminCustomContainer2({
+  //   super.key,
+  //   required this.count,
+  //   required this.totalParts,
+  //   required this.totalContainer,
+  // });
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +75,7 @@ class AdminCustomContainer2 extends StatelessWidget {
                 Column(
                   children: [
                     Text(
-                      '$count',
+                      '${controller.truckList.length}',
                       style: GoogleFonts.montserrat(
                         textStyle: TextStyle(
                           color: kBlueTextColor,
@@ -103,14 +109,16 @@ class AdminCustomContainer2 extends StatelessWidget {
                 ),
                 Column(
                   children: [
-                    Text(
-                      '$totalParts',
-                      style: GoogleFonts.montserrat(
-                        textStyle: TextStyle(
-                          color: kBlueTextColor,
-                          fontSize: 24.sp,
-                          fontWeight: FontWeight.w600,
-                          height: 0,
+                    Obx(
+                      () => Text(
+                        '${controller.lilaCount.value}',
+                        style: GoogleFonts.montserrat(
+                          textStyle: TextStyle(
+                            color: kBlueTextColor,
+                            fontSize: 24.sp,
+                            fontWeight: FontWeight.w600,
+                            height: 0,
+                          ),
                         ),
                       ),
                     ),
@@ -146,7 +154,7 @@ class AdminCustomContainer2 extends StatelessWidget {
                   width: 29.w,
                 ),
                 Text(
-                  "$totalParts gesamte Bauteile",
+                  "${controller.containerCount.value} gesamte Bauteile",
                   style: GoogleFonts.montserrat(
                     textStyle: TextStyle(
                       color: kBlueTextColor,

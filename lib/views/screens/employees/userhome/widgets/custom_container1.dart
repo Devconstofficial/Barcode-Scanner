@@ -1,6 +1,8 @@
 import 'package:barcode_scanner/utils/app_colors.dart';
+import 'package:barcode_scanner/views/screens/employees/userhome/controller/user_home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class CustomContainer1 extends StatefulWidget {
@@ -9,15 +11,16 @@ class CustomContainer1 extends StatefulWidget {
   const CustomContainer1({
     Key? key,
     required this.width,
+    this.date,
   }) : super(key: key);
+  final RxString? date;
 
   @override
   _CustomContainer1State createState() => _CustomContainer1State();
 }
 
 class _CustomContainer1State extends State<CustomContainer1> {
-  DateTime? _selectedDate;
-
+  UserHomeController controller = Get.put(UserHomeController());
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -75,9 +78,13 @@ class _CustomContainer1State extends State<CustomContainer1> {
                     firstDate: DateTime(2000),
                     lastDate: DateTime(2100),
                   ).then((selectedDate) {
-                    setState(() {
-                      _selectedDate = selectedDate;
-                    });
+                    
+                    widget.date!.value = '${_getDayOfWeek(selectedDate!.weekday)} - ${selectedDate.day}/${selectedDate.month}/${selectedDate.year}';
+                    print(widget.date!.value);
+                    controller.selectedDate.value = '${selectedDate.day}/${selectedDate.month}/${selectedDate.year}';
+                    print(controller.selectedDate.value);
+                    controller.fetchTrucks();
+
                   });
                 },
                 child: const Icon(
@@ -88,11 +95,11 @@ class _CustomContainer1State extends State<CustomContainer1> {
             ],
           ),
         ),
-        if (_selectedDate != null)
+        if (controller.selectedDate.value != '')
           SizedBox(
             height: 20.h,
           ),
-        if (_selectedDate != null)
+        if (controller.selectedDate.value != '')
           Container(
             width: 376.w,
             height: 59.h,
@@ -123,9 +130,7 @@ class _CustomContainer1State extends State<CustomContainer1> {
                 width: 29.w,
               ),
               Text(
-                _selectedDate != null
-                    ? '${_getDayOfWeek(_selectedDate!.weekday)} - ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
-                    : '',
+                widget.date!.value,
                 style: GoogleFonts.montserrat(
                   textStyle: TextStyle(
                     color: kGreenTextColor,
@@ -142,23 +147,24 @@ class _CustomContainer1State extends State<CustomContainer1> {
   }
 
   String _getDayOfWeek(int weekday) {
-    switch (weekday) {
-      case 1:
-        return 'Monday';
-      case 2:
-        return 'Tueday';
-      case 3:
-        return 'Wednesday';
-      case 4:
-        return 'Thursday';
-      case 5:
-        return 'Friday';
-      case 6:
-        return 'Saturday';
-      case 7:
-        return 'Sunday';
-      default:
-        return '';
-    }
+  switch (weekday) {
+    case 1:
+      return 'Montag';
+    case 2:
+      return 'Dienstag';
+    case 3:
+      return 'Mittwoch';
+    case 4:
+      return 'Donnerstag';
+    case 5:
+      return 'Freitag';
+    case 6:
+      return 'Samstag';
+    case 7:
+      return 'Sonntag';
+    default:
+      return '';
   }
+}
+
 }

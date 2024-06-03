@@ -3,6 +3,7 @@ String basePathIcons = "assets/icons";
 
 ///IMAGES
 String kAppLogo = "$basePath/app logo.png";
+String kLogo = '$basePath/barcode_logo.jpeg';
 String kCountryFlag = "$basePath/flag.png";
 String kTruck = "$basePath/truck.png";
 String kTruck2 = "$basePath/truck2.png";

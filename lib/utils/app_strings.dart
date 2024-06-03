@@ -10,3 +10,5 @@ const String kCustomNavBarRoute = "/CustomNavBarRoute";
 const String kDailyUpdateRoute = "/DailyUpdateRoute";
 const String kDataEnteringRoute = "/DataEnteringRoute";
 const String kAddAdminRoute = "/AddAdminRoute";
+const String kUserInfoRoute = "/UserInfoRoute";
+const String kResetPasswordRoute = '/ResetPasswordRoute';

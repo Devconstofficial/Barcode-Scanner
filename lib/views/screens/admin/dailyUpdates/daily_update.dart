@@ -9,7 +9,8 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class DailyUpdate extends StatelessWidget {
-  const DailyUpdate({super.key});
+  const 
+  DailyUpdate({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -99,12 +100,12 @@ class DailyUpdate extends StatelessWidget {
                 SizedBox(
                   height: 73.h,
                 ),
-                InkWell(
-                  onTap: () {
-                    Get.toNamed(kDataEnteringRoute);
-                  },
-                  child: const CustomButton(text: 'BENACHRICHTIGEN'),
-                ),
+                // InkWell(
+                //   onTap: () {
+                //     Get.offAndToNamed(kCustomNavBarRoute);
+                //   },
+                //   child: const CustomButton(text: 'BENACHRICHTIGEN'),
+                // ),
               ],
             ),
           ),

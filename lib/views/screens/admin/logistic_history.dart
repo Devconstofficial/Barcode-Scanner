@@ -1,14 +1,13 @@
 import 'package:barcode_scanner/utils/app_colors.dart';
-import 'package:barcode_scanner/utils/app_strings.dart';
-import 'package:barcode_scanner/views/screens/employees/userhome/widgets/custom_container1.dart';
-import 'package:barcode_scanner/views/screens/employees/userhome/widgets/custom_container2.dart';
-import 'package:barcode_scanner/views/screens/employees/userhome/widgets/custom_container3.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
-import '../../../cubits/truck_containers/cubit.dart';
+
+import 'adminhome/controller/admin_home_controller.dart';
+import 'adminhome/widgets/admin_custom_container1.dart';
+import 'adminhome/widgets/admin_custom_container2.dart';
+import 'adminhome/widgets/admin_custom_container3.dart';
 
 class LogisticHistory extends StatefulWidget {
   const LogisticHistory({super.key});
@@ -19,6 +18,11 @@ class LogisticHistory extends StatefulWidget {
 
 class _LogisticHistoryState extends State<LogisticHistory> {
   int counts = 0;
+  bool isLoading = true;
+  bool hasError = false;
+  AdminHomeController controller1 =
+        Get.put(AdminHomeController());
+
   @override
   void initState() {
     super.initState();
@@ -26,14 +30,20 @@ class _LogisticHistoryState extends State<LogisticHistory> {
   }
 
   Future<void> getTrucks() async {
-    final dataCubit = BlocProvider.of<DataCubit>(
-      context,
-    );
-    dataCubit.getAllTruckData();
-    int? count = await dataCubit.getTotalContainerCount();
-    setState(() {
-      counts = count ?? 0;
-    });
+    try {
+      await Future.delayed(Duration(seconds: 3));
+      
+
+      setState(() {
+        controller1.fetchTrucks();
+        isLoading = false;
+      });
+    } catch (error) {
+      setState(() {
+        isLoading = false;
+        hasError = true;
+      });
+    }
   }
 
   @override
@@ -47,9 +57,7 @@ class _LogisticHistoryState extends State<LogisticHistory> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(
-                  height: 10.h,
-                ),
+                SizedBox(height: 10.h),
                 Text(
                   "Logistikgeschichte",
                   textAlign: TextAlign.center,
@@ -62,9 +70,7 @@ class _LogisticHistoryState extends State<LogisticHistory> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 21.h,
-                ),
+                SizedBox(height: 21.h),
                 Text(
                   "Kalenderwoche auswählen",
                   textAlign: TextAlign.center,
@@ -77,28 +83,31 @@ class _LogisticHistoryState extends State<LogisticHistory> {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: 7.h,
-                ),
-                CustomContainer1(
+                SizedBox(height: 7.h),
+                AdminCustomContainer1(
                   width: 110.w,
+                  date: controller1.date,
                 ),
                 SizedBox(
                   height: 8.h,
                 ),
-                InkWell(
-                    onTap: () {
-                      Get.toNamed(kContainerDetailsRoute);
-                    },
-                    child: CustomContainer2(
-                      count: counts,
-                    )),
-                SizedBox(
-                  height: 8.h,
-                ),
-                GridView.builder(
+                if (isLoading)
+                  Center(child: CircularProgressIndicator())
+                else if (hasError)
+                  Center(child: Text('Unable to load data'))
+                else ...[
+                  AdminCustomContainer2(
+                count: controller1.trucksData.length,
+                lilaCount: controller1.lilaCount,
+                containerCount: controller1.containerCount,
+              ),
+              SizedBox(
+                height: 8.h,
+              ),
+              Obx(
+                ()=> GridView.builder(
                   shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
+                  physics: ScrollPhysics(),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                     crossAxisSpacing: 8.0,
@@ -106,14 +115,18 @@ class _LogisticHistoryState extends State<LogisticHistory> {
                     childAspectRatio: MediaQuery.of(context).size.width /
                         (MediaQuery.of(context).size.height / 1.65),
                   ),
-                  itemCount: 4,
+                  itemCount: controller1.truckList.length,
                   itemBuilder: (context, index) {
-                    return CustomCOntainer3(text: "Lilla $index");
+                    return AdminCustomContainer3(
+                      text: controller1.truckList[index].truckName,
+                      containers: controller1.truckList[index].containers,
+                    );
                   },
                 ),
-                SizedBox(
-                  height: 20.h,
-                )
+              ),
+                       
+                ],
+                SizedBox(height: 20.h),
               ],
             ),
           ),

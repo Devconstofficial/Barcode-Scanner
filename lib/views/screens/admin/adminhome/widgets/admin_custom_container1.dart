@@ -1,14 +1,18 @@
 import 'package:barcode_scanner/utils/app_colors.dart';
+import 'package:barcode_scanner/views/screens/admin/adminhome/controller/admin_home_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AdminCustomContainer1 extends StatefulWidget {
   final double width;
+  RxString? date;
 
-  const AdminCustomContainer1({
+   AdminCustomContainer1({
     super.key,
     required this.width,
+    this.date,
   });
 
   @override
@@ -17,7 +21,7 @@ class AdminCustomContainer1 extends StatefulWidget {
 
 class _AdminCustomContainer1State extends State<AdminCustomContainer1> {
   DateTime? _selectedDate;
-
+  AdminHomeController controller = Get.put(AdminHomeController());
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -78,6 +82,10 @@ class _AdminCustomContainer1State extends State<AdminCustomContainer1> {
                     setState(() {
                       _selectedDate = selectedDate;
                     });
+                    _selectedDate != null ?
+                    controller.date.value = '${_getDayOfWeek(_selectedDate!.weekday)} - ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}': widget.date!.value = '';
+                    controller.selectedDate.value = '${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}';
+                    controller.fetchTrucks();
                   });
                 },
                 child: const Icon(
@@ -123,9 +131,7 @@ class _AdminCustomContainer1State extends State<AdminCustomContainer1> {
                 width: 29.w,
               ),
               Text(
-                _selectedDate != null
-                    ? '${_getDayOfWeek(_selectedDate!.weekday)} - ${_selectedDate!.day}/${_selectedDate!.month}/${_selectedDate!.year}'
-                    : '',
+                widget.date!.value,
                 style: GoogleFonts.montserrat(
                   textStyle: TextStyle(
                     color: kGreenTextColor,
@@ -142,23 +148,24 @@ class _AdminCustomContainer1State extends State<AdminCustomContainer1> {
   }
 
   String _getDayOfWeek(int weekday) {
-    switch (weekday) {
-      case 1:
-        return 'Monday';
-      case 2:
-        return 'Tueday';
-      case 3:
-        return 'Wednesday';
-      case 4:
-        return 'Thursday';
-      case 5:
-        return 'Friday';
-      case 6:
-        return 'Saturday';
-      case 7:
-        return 'Sunday';
-      default:
-        return '';
-    }
+  switch (weekday) {
+    case 1:
+      return 'Montag';
+    case 2:
+      return 'Dienstag';
+    case 3:
+      return 'Mittwoch';
+    case 4:
+      return 'Donnerstag';
+    case 5:
+      return 'Freitag';
+    case 6:
+      return 'Samstag';
+    case 7:
+      return 'Sonntag';
+    default:
+      return '';
   }
+}
+
 }
